@@ -15,10 +15,10 @@ bootstrap/
 └── sync-claude.ps1       윈도우 (미검증)
 ```
 
-## 새 컴퓨터에서
+## 새 우분투 컴퓨터에서
 
 ```bash
-git clone <저장소 주소> ~/claude_set
+git clone https://github.com/wony046/claude_set.git ~/claude_set
 ~/claude_set/bootstrap/sync-claude.sh
 ```
 
@@ -39,9 +39,9 @@ sync-claude.sh --pull     ~/.claude/ 에서 고친 것을 home/ 으로 회수
 
 `CLAUDE.md` 와 출력 스타일은 다음 세션부터 반영된다.
 
-## 메모
+## 참고
 
-- `settings.json` 은 통째로 덮어쓰지 않고 적힌 항목만 병합한다.
-  모델과 노력 수준 등은 각 컴퓨터에서 UI 로 조정하는 값이라 여기 넣지 않는다.
+- `settings.json` 은 통째로 덮어쓰지 않고 적힌 항목만 복사해서 추가로 넣음.
+  모델과 노력 수준 등은 각 컴퓨터에서 vscode UI 로 조정하는 값이라 여기 넣지 않음.
 - `claudeMdExcludes` 는 이 저장소 안의 `CLAUDE.md` 가 프로젝트 규칙으로
-  한 번 더 읽히는 것을 막는다.
+  한 번 더 읽히는 것을 막음.
