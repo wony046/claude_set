@@ -29,6 +29,34 @@ list_items() {
   done
 }
 
+# 저장소 쪽 파일이 홈에 같은 내용으로 있는지만 본다. 홈에만 있는 파일은 따지지 않는다
+same_as_src() {
+  python3 - "$1" "$2" <<'PY'
+import sys, os, filecmp
+src, dst = sys.argv[1], sys.argv[2]
+if not os.path.exists(dst):
+    sys.exit(1)
+if os.path.isdir(src):
+    for root, _, files in os.walk(src):
+        for f in files:
+            a = os.path.join(root, f)
+            b = os.path.join(dst, os.path.relpath(a, src))
+            if not os.path.exists(b) or not filecmp.cmp(a, b, shallow=False):
+                sys.exit(1)
+    sys.exit(0)
+sys.exit(0 if filecmp.cmp(src, dst, shallow=False) else 1)
+PY
+}
+
+# 홈에만 있는 파일을 나열한다
+list_extras() {
+  local src="$1" dst="$2"
+  [ -d "$src" ] && [ -d "$dst" ] || return 0
+  ( cd "$dst" && find . -type f 2>/dev/null | sed 's|^\./||' ) | while read -r f; do
+    [ -e "$src/$f" ] || echo "$f"
+  done
+}
+
 # 공유 항목만 덮어쓰고 나머지 설정은 그대로 둔다
 merge_settings() {
   python3 - "$SRC/settings.json" "$DEST/settings.json" "$STAMP" <<'PY'
@@ -55,8 +83,8 @@ do_install() {
   echo "Installing from $SRC"
   while read -r name; do
     src="$SRC/$name"; dst="$DEST/$name"
-    # 내용이 다르면 백업을 남긴다
-    if [ -e "$dst" ] && ! diff -rq "$src" "$dst" >/dev/null 2>&1; then
+    # 내용이 다를 때만 백업을 남긴다
+    if [ -e "$dst" ] && ! same_as_src "$src" "$dst"; then
       cp -a "$dst" "$dst.backup-$STAMP"
       echo "  backed up: $name -> $name.backup-$STAMP"
     fi
@@ -78,12 +106,12 @@ do_status() {
     src="$SRC/$name"; dst="$DEST/$name"
     if [ ! -e "$dst" ]; then
       echo "  [none] $name"
-    elif diff -rq "$src" "$dst" >/dev/null 2>&1; then
+    elif same_as_src "$src" "$dst"; then
       echo "  [ok  ] $name"
     else
       echo "  [DIFF] $name"
-      diff -rq "$src" "$dst" 2>&1 | sed 's/^/         /'
     fi
+    list_extras "$src" "$dst" | sed 's/^/         extra in home: /'
   done < <(list_items)
   python3 - "$SRC/settings.json" "$DEST/settings.json" <<'PY'
 import json, os, sys
@@ -100,12 +128,14 @@ do_pull() {
   echo "Collecting from $DEST"
   while read -r name; do
     src="$SRC/$name"; dst="$DEST/$name"
-    [ -e "$dst" ] || { echo "  skipped: $name"; continue; }
-    if diff -rq "$src" "$dst" >/dev/null 2>&1; then
-      echo "  unchanged: $name"; continue
+    if [ ! -e "$dst" ]; then
+      echo "  skipped: $name"
+    elif same_as_src "$src" "$dst"; then
+      echo "  unchanged: $name"
+    else
+      if [ -d "$dst" ]; then cp -a "$dst/." "$src/"; else cp -a "$dst" "$src"; fi
+      echo "  pulled: $name"
     fi
-    if [ -d "$dst" ]; then cp -a "$dst/." "$src/"; else cp -a "$dst" "$src"; fi
-    echo "  pulled: $name"
   done < <(list_items)
   echo "Review with: git -C \"$REPO\" diff"
 }
