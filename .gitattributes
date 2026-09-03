@@ -1,0 +1,4 @@
+* text=auto eol=lf
+
+# 윈도우 전용 파일을 추가할 때는 eol=crlf 예외를 검토할 것
+# 예: *.bat text eol=crlf

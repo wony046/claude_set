@@ -1,0 +1,4 @@
+{
+  "outputStyle": "fluent-korean",
+  "claudeMdExcludes": ["**/claude_set/home/CLAUDE.md"]
+}
