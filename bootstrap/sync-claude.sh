@@ -66,16 +66,19 @@ shared = json.load(open(src))
 current = {}
 if os.path.exists(dst):
     current = json.load(open(dst))
-    shutil.copy2(dst, f"{dst}.backup-{stamp}")
 changed = {k: v for k, v in shared.items() if current.get(k) != v}
+if not changed:
+    print("  settings already up to date")
+    sys.exit(0)
+# 바뀔 항목이 있을 때만 사본을 남긴다
+if os.path.exists(dst):
+    shutil.copy2(dst, f"{dst}.backup-{stamp}")
 current.update(shared)
 with open(dst, "w") as f:
     json.dump(current, f, indent=2, ensure_ascii=False)
     f.write("\n")
 for k, v in changed.items():
     print(f"  merged: {k} = {v!r}")
-if not changed:
-    print("  settings already up to date")
 PY
 }
 
