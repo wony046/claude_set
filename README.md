@@ -9,6 +9,7 @@ Claude Code 개인 설정을 여러 컴퓨터에서 동일하게 유지하기 �
 home/                     ~/.claude/ 로 복사되는 정본
 ├── CLAUDE.md             모든 프로젝트에 적용되는 공통 규칙
 ├── settings.json         공유하는 설정 항목만 (나머지는 각 컴퓨터가 관리)
+├── rules/                주제별 규칙. paths 로 특정 파일에만 걸 수 있음
 └── output-styles/        출력 스타일
 bootstrap/
 ├── sync-claude.sh        우분투·맥
@@ -24,7 +25,7 @@ git clone https://github.com/wony046/claude_set.git ~/claude_set
 
 ## 새 윈도우 컴퓨터에서
 
-```powersell
+```powershell
 git clone https://github.com/wony046/claude_set.git ~/claude_set
 ~/claude_set/bootstrap/sync-claude.ps1
 ```
