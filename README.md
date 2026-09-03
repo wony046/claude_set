@@ -22,6 +22,13 @@ git clone https://github.com/wony046/claude_set.git ~/claude_set
 ~/claude_set/bootstrap/sync-claude.sh
 ```
 
+## 새 윈도우 컴퓨터에서
+
+```powersell
+git clone https://github.com/wony046/claude_set.git ~/claude_set
+~/claude_set/bootstrap/sync-claude.ps1
+```
+
 ## 사용법
 
 ```bash
