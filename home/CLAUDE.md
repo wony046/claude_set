@@ -36,7 +36,7 @@
 기본값은 `* text=auto eol=lf`.
 윈도우 전용 파일(`.bat`, `.cmd` 등)을 추가할 때는 `*.bat text eol=crlf` 예외를 검토함.
 
-## 파이썬 배포판 이름 (distribution)과 임포트 이름 (import name)은 동일하게 작성할 것.
+## 8. 파이썬 배포판 이름 (distribution)과 임포트 이름 (import name)은 동일하게 작성할 것.
 파이썬 관련 작업 시, - <- 이거 사용 금지.
 
 ---
