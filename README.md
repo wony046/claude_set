@@ -13,7 +13,7 @@ home/                     ~/.claude/ 로 복사되는 정본
 └── output-styles/        출력 스타일
 bootstrap/
 ├── sync-claude.sh        우분투·맥
-└── sync-claude.ps1       윈도우 (미검증)
+└── sync-claude.ps1       윈도우. UTF-8 BOM + CRLF
 ```
 
 ## 새 우분투 컴퓨터에서
@@ -26,8 +26,8 @@ git clone https://github.com/wony046/claude_set.git ~/claude_set
 ## 새 윈도우 컴퓨터에서
 
 ```powershell
-git clone https://github.com/wony046/claude_set.git ~/claude_set
-~/claude_set/bootstrap/sync-claude.ps1
+git clone https://github.com/wony046/claude_set.git "$HOME\claude_set"
+& "$HOME\claude_set\bootstrap\sync-claude.ps1"
 ```
 
 ## 사용법
@@ -36,6 +36,12 @@ git clone https://github.com/wony046/claude_set.git ~/claude_set
 sync-claude.sh            home/ 을 ~/.claude/ 로 설치하고 공유 설정을 병합
 sync-claude.sh --status   양쪽을 비교만 함
 sync-claude.sh --pull     ~/.claude/ 에서 고친 것을 home/ 으로 회수
+```
+
+```powershell
+sync-claude.ps1           home\ 을 ~\.claude\ 로 설치하고 공유 설정을 병합
+sync-claude.ps1 -Status   양쪽을 비교만 함
+sync-claude.ps1 -Pull     ~\.claude\ 에서 고친 것을 home\ 으로 회수
 ```
 
 ## 규칙을 고칠 때

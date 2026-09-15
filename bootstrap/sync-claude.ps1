@@ -1,5 +1,6 @@
-# claude_set/home 을 %USERPROFILE%\.claude 로 설치한다.
-# 주의: 우분투에서 작성했고 윈도우에서 아직 검증하지 않았다.
+﻿# claude_set/home 을 %USERPROFILE%\.claude 로 설치한다.
+# 주의: 이 파일은 UTF-8 BOM + CRLF 로 저장한다. BOM 이 없으면 Windows PowerShell 5.1 이
+#       cp949 로 읽어서 한글 주석이 다음 줄을 삼키고 파싱이 깨진다.
 param([switch]$Status, [switch]$Pull, [switch]$Help)
 $ErrorActionPreference = "Stop"
 
@@ -38,10 +39,10 @@ function Test-Same($a, $b) {
 
 # 공유 항목만 덮어쓰고 나머지 설정은 그대로 둔다
 function Merge-Settings {
-  $shared = Get-Content $SrcSettings -Raw | ConvertFrom-Json
+  $shared = Get-Content $SrcSettings -Raw -Encoding UTF8 | ConvertFrom-Json
   if (Test-Path $DestSettings) {
     Copy-Item $DestSettings "$DestSettings.backup-$Stamp"
-    $current = Get-Content $DestSettings -Raw | ConvertFrom-Json
+    $current = Get-Content $DestSettings -Raw -Encoding UTF8 | ConvertFrom-Json
   } else {
     $current = [PSCustomObject]@{}
   }
@@ -49,7 +50,9 @@ function Merge-Settings {
     $current | Add-Member -NotePropertyName $p.Name -NotePropertyValue $p.Value -Force
     Write-Host "  merged: $($p.Name)"
   }
-  $current | ConvertTo-Json -Depth 20 | Set-Content $DestSettings -Encoding UTF8
+  # Set-Content -Encoding UTF8 은 PS 5.1 에서 BOM 을 붙인다. sh 판과 같이 BOM 없이 쓴다.
+  $json = ($current | ConvertTo-Json -Depth 20) + "`n"
+  [System.IO.File]::WriteAllText($DestSettings, $json, (New-Object System.Text.UTF8Encoding($false)))
 }
 
 if (-not (Test-Path $Src)) { Write-Host "Not found: $Src"; exit 1 }

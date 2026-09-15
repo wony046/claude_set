@@ -1,4 +1,8 @@
+# 리눅스에서 쓰는 건 LF 로  
 * text=auto eol=lf
 
-# 윈도우 전용 파일을 추가할 때는 eol=crlf 예외를 검토할 것
-# 예: *.bat text eol=crlf
+# 윈도우 전용 파일은 CRLF 로
+# .ps1 은 BOM 없는 UTF-8 이면 주석 문제 발생.
+# 파일 자체도 UTF-8 BOM 으로 저장.
+*.ps1 text eol=crlf
+*.bat text eol=crlf
